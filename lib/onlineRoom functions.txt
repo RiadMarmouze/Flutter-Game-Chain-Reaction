@@ -1,0 +1,187 @@
+
+  Map<String, dynamic> loadRoomStaticFromDatabase() {
+    final DatabaseReference roomRef = FirebaseDatabase.instance.ref().child("rooms").child(uid).child("static");
+    Map<String, dynamic> snapshotValue = {};
+    roomRef.once().then(
+      (DatabaseEvent event) {
+        DataSnapshot snapshot = event.snapshot;
+        if (snapshot.value != null) {
+          snapshotValue = snapshot.value as Map<String, dynamic>;
+        } else {
+          print('Room data is null');
+        }
+      },
+    ).catchError(
+      (error) {
+        print('Error loading room from database: $error');
+      },
+    );
+    return snapshotValue;
+  }
+
+  Map<String, dynamic> loadRoomDynamicFromDatabase() {
+    final DatabaseReference roomRef = FirebaseDatabase.instance.ref().child("rooms").child(uid).child("dynamic");
+    Map<String, dynamic> snapshotValue = {};
+    roomRef.once().then(
+      (DatabaseEvent event) {
+        DataSnapshot snapshot = event.snapshot;
+        if (snapshot.value != null) {
+          snapshotValue = snapshot.value as Map<String, dynamic>;
+        } else {
+          print('Room data is null');
+        }
+      },
+    ).catchError(
+      (error) {
+        print('Error loading room from database: $error');
+      },
+    );
+    return snapshotValue;
+  }
+
+  void listenToRoom(Function(Map<String, dynamic>) onUpdate) {
+    final DatabaseReference roomRef = FirebaseDatabase.instance.ref().child("rooms").child(uid);
+    roomRef.onValue.listen(
+      (event) {
+        dynamic value = event.snapshot.value;
+        onUpdate(value);
+      },
+      onError: (error) {
+        print('Error listening to room: $error');
+      },
+    );
+  }
+
+  void listenToRoomGamePlay(Function(Map<String, dynamic>) onMoveAdd) {
+    final DatabaseReference roomRef = FirebaseDatabase.instance.ref().child("rooms").child(uid).child("gamePlay");
+
+    roomRef.onChildAdded.listen(
+      (event) {
+        dynamic value = event.snapshot.value;
+        onMoveAdd(value);
+      },
+      onError: (error) {
+        print('Error listening to room: $error');
+      },
+    );
+  }
+
+  Future<void> updateCell(int row, col, Map<String, dynamic> cellMap) async {
+    // Create a reference to the specific cell in Firebase
+    final DatabaseReference cellRef = FirebaseDatabase.instance.ref().child("rooms").child(uid).child("matrixState").child("${row - 1}").child("${col - 1}");
+
+    // Update the cell state in Firebase
+    await cellRef.set(cellMap);
+  }
+
+  Future<void> updateRoom(Map<String, dynamic> roomMap) async {
+    // Create a reference to the specific cell in Firebase
+    final DatabaseReference roomRef = FirebaseDatabase.instance.ref().child("rooms").child(uid);
+
+    // Update the cell state in Firebase
+    await roomRef.set(roomMap);
+  }
+
+  Future<void> addMove(Map<String, dynamic> moveMap) async {
+    try {
+      // Create a reference to the specific room's gameplay in Firebase
+      final DatabaseReference roomRef = FirebaseDatabase.instance
+          .ref()
+          .child("rooms")
+          .child(uid) // Assuming uid is accessible here
+          .child("gamePlay");
+
+      // Fetch the existing moves
+      DatabaseEvent event = await roomRef.once();
+
+      // Get the snapshot from the event
+      DataSnapshot snapshot = event.snapshot;
+
+      // Check if the snapshot value is null or not an Iterable<dynamic>
+      if (snapshot.value != null && snapshot.value is Iterable) {
+        // Convert the value to a List<dynamic>
+        List<dynamic> existingMoves = List.from(snapshot.value as Iterable);
+
+        // Add the new move to the beginning of the list
+        existingMoves.insert(0, moveMap);
+
+        // Update the moves in Firebase
+        await roomRef.set(existingMoves);
+      } else {
+        // Initialize existingMoves with the new move if snapshot value is null or not an Iterable
+        List<dynamic> existingMoves = [moveMap];
+
+        // Update the moves in Firebase
+        await roomRef.set(existingMoves);
+      }
+    } catch (e) {
+      print("Error adding move: $e");
+      // Handle error appropriately
+    }
+  }
+
+  Future<bool> myTurn(int index) async {
+    try {
+      // Create a reference to the specific cell in Firebase
+      final DatabaseReference roomRef = FirebaseDatabase.instance.ref().child("rooms").child(uid).child("currentplayerindex");
+
+      // Fetch the current player index from Firebase
+      DatabaseEvent event = await roomRef.once();
+
+      // Get the snapshot from the event
+      DataSnapshot snapshot = event.snapshot;
+
+      // Check if the snapshot contains a valid value
+      if (snapshot.value != null) {
+        // Cast the value to int
+        int? currentPlayerIndex = snapshot.value as int?;
+
+        // Check if the cast was successful and if currentPlayerIndex is not null
+        if (currentPlayerIndex != null) {
+          // Compare the fetched index with the provided index
+          return index == currentPlayerIndex;
+        } else {
+          // Handle the case where the value couldn't be cast to int
+          throw Exception("Snapshot value could not be cast to int");
+        }
+      } else {
+        // Handle the case where snapshot value is null
+        throw Exception("Snapshot value is null");
+      }
+    } catch (e) {
+      // Handle any exceptions that might occur during the asynchronous operation
+      print("Error fetching data: $e");
+      return false;
+    }
+  }
+
+  Future<bool> areAllMovesExecuted() async {
+    try {
+      final DatabaseReference roomRef = FirebaseDatabase.instance
+          .ref()
+          .child("rooms")
+          .child(uid) // No need for string interpolation here
+          .child("executemovestate"); // Typo: should be "executemovestate"
+
+      // Fetch the data from Firebase
+      DataSnapshot snapshot = await roomRef.once().then((event) => event.snapshot);
+
+      // Check if the snapshot contains a valid value
+      if (snapshot.value != null) {
+        // Cast the value to List<dynamic>
+        List<dynamic> executeMoveState = List.from(snapshot.value as Iterable);
+
+        // Check if all elements in the list are false
+        bool allFalse = executeMoveState.every((element) => element == false);
+
+        return allFalse;
+      } else {
+        // Handle the case where the snapshot value is null
+        throw Exception("Snapshot value is null");
+      }
+    } catch (e) {
+      // Handle any errors occurred during Firebase operation
+      print("Error: $e");
+      return false; // Return false in case of error
+    }
+  }
