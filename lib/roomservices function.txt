@@ -1,0 +1,236 @@
+import 'package:chain_reaction/models/move.dart';
+import 'package:chain_reaction/models/player.dart';
+import 'package:chain_reaction/models/cell.dart';
+import 'package:chain_reaction/models/roomLocal.dart';
+import 'package:chain_reaction/services/database_room_service.dart';
+
+class RoomOnline extends RoomLocal {
+  // only online
+
+  late final Player player;
+
+  late final String id;
+
+  late final Player host;
+  late RoomService roomService;
+
+  late bool startGame;
+  late Move currentGamePlay;
+  late List<bool> executeMoveState;
+
+  bool get isMyTurn => player.index == currentPlayer.index;
+
+  RoomOnline({
+    required this.host,
+    required super.boardHeight,
+    required super.boardWidth,
+    required super.maxPlayers,
+  }) {
+    _initRoomDynamic();
+  }
+
+  RoomOnline.asHost({
+    required this.host,
+    required super.boardHeight,
+    required super.boardWidth,
+    required super.maxPlayers,
+  }) {
+    _initRoomService();
+    player = host;
+    _initRoomDynamic();
+  }
+
+  void _initRoomService() async {
+    roomService = RoomService();
+    await roomService.initializeUid();
+    id = roomService.uid;
+  }
+
+  void loadToFireBase() async {
+    roomService.createRoomInFirebase(toMap());
+  }
+
+  // RoomOnline.loadFromFireBase({
+  //   required this.id,
+  // }) : super(boardHeight: 0, boardWidth: 0, maxPlayers: 0) {
+  //   roomService = RoomService(uid: id);
+  //   // RoomOnline newRoom = roomService.loadRoomFromDatabase() as RoomOnline;
+  //   // setRoomOnlineValues(newRoom);
+  // }
+
+  // RoomOnline.initAsGuest({
+  //   required this.id,
+  //   required this.player,
+  //   required super.boardHeight,
+  //   required super.boardWidth,
+  //   required super.maxPlayers,
+  // }) {
+  //   matrixState = _initGenerateMatrixState();
+  // }
+
+  // RoomOnline.initAsHost({
+  //   required this.id,
+  //   required this.host,
+  //   required super.boardHeight,
+  //   required super.boardWidth,
+  //   required super.maxPlayers,
+  // }) {
+  //   player = host;
+  //   setInitPlayersInfosOnline(host);
+  //   matrixState = _initGenerateMatrixState();
+  // }
+
+  Map<String, dynamic> roomDynamicToMap() {
+    return {
+      'allPlayers': allPlayers.map((player) => player.toMap()).toList(), 
+      'remainPlayers': remainPlayers.map((player) => player.toMap()).toList(), 
+      'currentPlayer': currentPlayer.toMap(), 
+      'currentPlayerIndex': currentPlayerIndex, 
+      'endGame': endGame, 
+      'startGame': startGame, 
+      'currentGamePlay': currentGamePlay.toMap(), 
+      'executeMoveState': executeMoveState, 
+      'gamePlayHistory': gamePlayHistory.map((move) => move.toMap()).toList(), 
+      'matrixState': _removedPaddingMap(matrixState)
+    };
+  }
+
+  Map<String, dynamic> roomStaticToMap() {
+    return {
+      'id': id,
+      'host': host.toMap(),
+      'boardHeight': boardHeight,
+      'boardWidth': boardWidth,
+      'maxPlayers': maxPlayers,
+    };
+  }
+
+  Map<String, dynamic> toMap() {
+    return {'static': roomStaticToMap(), 'dynamic': roomDynamicToMap()};
+  }
+
+  static RoomOnline staticFromMap(Map<String, dynamic> map) {
+    return RoomOnline(
+      host: Player.fromMap(map['host']),
+      boardHeight: map['boardHeight'],
+      boardWidth: map['boardWidth'],
+      maxPlayers: map['maxPlayers'],
+    );
+  }
+
+  List<List<Map<String, dynamic>>> _removedPaddingMap(List<List<Cell>> matrixState) {
+    List<List<Map<String, dynamic>>> matrixStateList = [];
+
+    // Start from the second row and end at the second-to-last row
+    for (int i = 1; i < matrixState.length - 1; i++) {
+      var row = matrixState[i];
+      List<Map<String, dynamic>> rowList = [];
+      // Start from the second element and end at the second-to-last element in each row
+      for (int j = 1; j < row.length - 1; j++) {
+        var cell = row[j];
+        rowList.add(cell.toMap());
+      }
+      matrixStateList.add(rowList);
+    }
+    return matrixStateList;
+  }
+
+  void _initRoomDynamic() {
+    allPlayers = _initGenerateAllPlayersOnline(host);
+    remainPlayers = allPlayers;
+    currentPlayerIndex = 0;
+
+    endGame = false;
+    startGame = false;
+
+    currentGamePlay = Move(row: -1, col: -1, playerindex: -1);
+    executeMoveState = List.filled(maxPlayers, false);
+    gamePlayHistory = [];
+
+    matrixState = _initGenerateMatrixState();
+  }
+
+  // players infos
+
+  List<Player> _initGenerateAllPlayersOnline(Player newHost) {
+    return List.generate(maxPlayers, (index) {
+      if (index == newHost.index) {
+        return Player(username: "player${newHost.index + 1}(host)", index: newHost.index);
+      } else {
+        return Player(username: "player${index + 1}(guest)", index: index);
+      }
+    });
+  }
+
+  // bool isWin() {
+  //   if (gamePlayHistory.length > maxPlayers) {
+  //     return (remainPlayers.length == 1);
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+  // start/end game
+
+  void setStartGame() {
+    startGame = true;
+  }
+
+  // void setEndGame() {
+  //   endGame = true;
+  // }
+
+  // gameplay
+
+  void setCurrentGamePlay(int row, int col) {
+    Move newMove = Move(row: row, col: col, playerindex: currentPlayer.index);
+    currentGamePlay = newMove;
+  }
+
+  void setGamePlayHistory(List<Move> newHistory) {
+    gamePlayHistory = newHistory;
+  }
+
+  // void addToGamePlayHistory(int row, int col) {
+  //   Move newMove = Move(row: row, col: col, playerindex: currentPlayer.index);
+  //   gamePlayHistory.insert(0, newMove);
+  // }
+
+  // // matrix cells state
+
+  // Cell getCell(int row, int col) {
+  //   return matrixState[row][col];
+  // }
+
+  // void setDefaultCell(int row, int col) {
+  //   matrixState[row][col] = Cell(row: row, col: col, boardHeight: boardHeight, boardWidth: boardWidth);
+  // }
+
+  // void addToCell(int row, int col) {
+  //   matrixState[row][col].addToCell(currentPlayer);
+  // }
+
+  // bool isCanPlayInCell(int row, int col) {
+  //   return matrixState[row][col].isCanPlay(currentPlayer);
+  // }
+
+  // matrix state
+
+  List<List<Cell>> _initGenerateMatrixState() {
+    return List.generate(boardHeight + 2, (row) {
+      return List.generate(boardWidth + 2, (col) {
+        return Cell(row: row, col: col, boardHeight: boardHeight, boardWidth: boardWidth);
+      });
+    });
+  }
+
+  // Animation functions
+
+  // String getAnimeCellPic() {
+  //   return "assets/player${currentPlayer.index + 1}_1.png";
+  // }
+
+  // void setAnimeState(int row, int col, bool state) {
+  //   matrixState[row][col].setAnimeState(state);
+  // }
+}

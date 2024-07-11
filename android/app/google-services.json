@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "519109200908",
+    "project_id": "chain-reaction-1",
+    "storage_bucket": "chain-reaction-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519109200908:android:95b44f2803ce7a9dafb229",
+        "android_client_info": {
+          "package_name": "com.example.chain_reaction"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAol5Jqy-ZxDtZhheuksk4Iu9GiMMx2lHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

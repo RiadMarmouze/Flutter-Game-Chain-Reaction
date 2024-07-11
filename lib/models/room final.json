@@ -1,0 +1,155 @@
+{
+  "rooms":{
+    "room123":{
+      "static":{
+        "id": "room123",
+        "host": {
+          "id": "ScVU6waMaGebFDmPoO4Y",
+          "username": "player1",
+          "index": 0
+        },
+        "boardHeight": 10,
+        "boardWidth": 6,
+        "maxPlayers": 2
+      },
+      "dynamic":{
+        "allPlayers": [
+          {
+            "id": "ScVU6waMaGebFDmPoO4Y",
+            "username": "player1",
+            "index": 0
+          },
+          {
+            "id": "vOMuWrL2AxirT8VI9NbO",
+            "username": "player2",
+            "index": 1
+          }
+        ],
+        "remainPlayers": [
+          {
+            "id": "ScVU6waMaGebFDmPoO4Y",
+            "username": "player1",
+            "index": 0
+          },
+          {
+            "id": "vOMuWrL2AxirT8VI9NbO",
+            "username": "player2",
+            "index": 1
+          }
+        ],
+        "currentPlayer": {
+          "id": "ScVU6waMaGebFDmPoO4Y",
+          "username": "player1",
+          "index": 0
+        },
+        "currentPlayerIndex": 0,
+  
+        "startGame":false,
+        "endGame":false,
+  
+        "executeCurrentMoveState":[false,false],
+        "currentGamePlay":{
+          "playerindex":0,
+          "row":1,
+          "col":1
+        },
+        "gamePlayHistory": [{
+          "playerindex":0,
+          "row":1,
+          "col":1
+        }],
+  
+        "matrixState": [
+          [
+            {"row": 1, "col": 1, "state": 0, "player": -1, "animeState": false},
+            {"row": 1, "col": 2, "state": 0, "player": -1, "animeState": false},
+            {"row": 1, "col": 3, "state": 0, "player": -1, "animeState": false},
+            {"row": 1, "col": 4, "state": 0, "player": -1, "animeState": false},
+            {"row": 1, "col": 5, "state": 0, "player": -1, "animeState": false},
+            {"row": 1, "col": 6, "state": 0, "player": -1, "animeState": false}
+          ],
+          [
+            {"row": 2, "col": 1, "state": 0, "player": -1, "animeState": false},
+            {"row": 2, "col": 2, "state": 0, "player": -1, "animeState": false},
+            {"row": 2, "col": 3, "state": 0, "player": -1, "animeState": false},
+            {"row": 2, "col": 4, "state": 0, "player": -1, "animeState": false},
+            {"row": 2, "col": 5, "state": 0, "player": -1, "animeState": false},
+            {"row": 2, "col": 6, "state": 0, "player": -1, "animeState": false}
+          ],
+          [
+            {"row": 3, "col": 1, "state": 0, "player": -1, "animeState": false},
+            {"row": 3, "col": 2, "state": 0, "player": -1, "animeState": false},
+            {"row": 3, "col": 3, "state": 0, "player": -1, "animeState": false},
+            {"row": 3, "col": 4, "state": 0, "player": -1, "animeState": false},
+            {"row": 3, "col": 5, "state": 0, "player": -1, "animeState": false},
+            {"row": 3, "col": 6, "state": 0, "player": -1, "animeState": false}
+          ],
+          [
+            {"row": 3, "col": 1, "state": 0, "player": -1, "animeState": false},
+            {"row": 3, "col": 2, "state": 0, "player": -1, "animeState": false},
+            {"row": 3, "col": 3, "state": 0, "player": -1, "animeState": false},
+            {"row": 3, "col": 4, "state": 0, "player": -1, "animeState": false},
+            {"row": 3, "col": 5, "state": 0, "player": -1, "animeState": false},
+            {"row": 3, "col": 6, "state": 0, "player": -1, "animeState": false}
+          ],
+          [
+            {"row": 4, "col": 1, "state": 0, "player": -1, "animeState": false},
+            {"row": 4, "col": 2, "state": 0, "player": -1, "animeState": false},
+            {"row": 4, "col": 3, "state": 0, "player": -1, "animeState": false},
+            {"row": 4, "col": 4, "state": 0, "player": -1, "animeState": false},
+            {"row": 4, "col": 5, "state": 0, "player": -1, "animeState": false},
+            {"row": 4, "col": 6, "state": 0, "player": -1, "animeState": false}
+          ],
+          [
+            {"row": 5, "col": 1, "state": 0, "player": -1, "animeState": false},
+            {"row": 5, "col": 2, "state": 0, "player": -1, "animeState": false},
+            {"row": 5, "col": 3, "state": 0, "player": -1, "animeState": false},
+            {"row": 5, "col": 4, "state": 0, "player": -1, "animeState": false},
+            {"row": 5, "col": 5, "state": 0, "player": -1, "animeState": false},
+            {"row": 5, "col": 6, "state": 0, "player": -1, "animeState": false}
+          ],
+          [
+            {"row": 6, "col": 1, "state": 0, "player": -1, "animeState": false},
+            {"row": 6, "col": 2, "state": 0, "player": -1, "animeState": false},
+            {"row": 6, "col": 3, "state": 0, "player": -1, "animeState": false},
+            {"row": 6, "col": 4, "state": 0, "player": -1, "animeState": false},
+            {"row": 6, "col": 5, "state": 0, "player": -1, "animeState": false},
+            {"row": 6, "col": 6, "state": 0, "player": -1, "animeState": false}
+          ],
+          [
+            {"row": 7, "col": 1, "state": 0, "player": -1, "animeState": false},
+            {"row": 7, "col": 2, "state": 0, "player": -1, "animeState": false},
+            {"row": 7, "col": 3, "state": 0, "player": -1, "animeState": false},
+            {"row": 7, "col": 4, "state": 0, "player": -1, "animeState": false},
+            {"row": 7, "col": 5, "state": 0, "player": -1, "animeState": false},
+            {"row": 7, "col": 6, "state": 0, "player": -1, "animeState": false}
+          ],
+          [
+            {"row": 8, "col": 1, "state": 0, "player": -1, "animeState": false},
+            {"row": 8, "col": 2, "state": 0, "player": -1, "animeState": false},
+            {"row": 8, "col": 3, "state": 0, "player": -1, "animeState": false},
+            {"row": 8, "col": 4, "state": 0, "player": -1, "animeState": false},
+            {"row": 8, "col": 5, "state": 0, "player": -1, "animeState": false},
+            {"row": 8, "col": 6, "state": 0, "player": -1, "animeState": false}
+          ],
+          [
+            {"row": 9, "col": 1, "state": 0, "player": -1, "animeState": false},
+            {"row": 9, "col": 2, "state": 0, "player": -1, "animeState": false},
+            {"row": 9, "col": 3, "state": 0, "player": -1, "animeState": false},
+            {"row": 9, "col": 4, "state": 0, "player": -1, "animeState": false},
+            {"row": 9, "col": 5, "state": 0, "player": -1, "animeState": false},
+            {"row": 9, "col": 6, "state": 0, "player": -1, "animeState": false}
+          ],
+          [
+            {"row": 10, "col": 1, "state": 0, "player": -1, "animeState": false},
+            {"row": 10, "col": 2, "state": 0, "player": -1, "animeState": false},
+            {"row": 10, "col": 3, "state": 0, "player": -1, "animeState": false},
+            {"row": 10, "col": 4, "state": 0, "player": -1, "animeState": false},
+            {"row": 10, "col": 5, "state": 0, "player": -1, "animeState": false},
+            {"row": 10, "col": 6, "state": 0, "player": -1, "animeState": false}
+          ]
+        ]
+      }
+    }    
+  }
+}
